@@ -94,3 +94,5 @@ for r in xrange(1181415,1181420):
 	# while marca_json.find("ErrorMensaje"):
 	cantidad_segundos_espera = random.randint(1, 10)
 	time.sleep(cantidad_segundos_espera)
+
+#Hay que organizar un poco el codigo
