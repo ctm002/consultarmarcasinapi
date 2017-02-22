@@ -70,6 +70,10 @@ class ConsultaMarca(object):
 		self.param16 = ""
 		self.param17 = "1"
 
+class RespuestaMarca(object):
+	def __init__(self, j):
+		self.__dict__=json.loads(j)
+
 #App Principal
 uri = "http://200.55.216.86:8080/Marca/BuscarMarca.aspx"
 res = fetch(uri)
@@ -81,7 +85,12 @@ cookie = get_cookie()
 
 for r in xrange(1181415,1181420):
 	marca_json = buscar_marcas_by(r, cookie, value_hash, value_id)
-	print(marca_json)	
+	print marca_json
+	if marca_json.find("ErrorMessage") == -1:
+		marca_respuesta = RespuestaMarca(marca_json)
+		d = json.loads(marca_respuesta.d)
+		value_hash=d['Hash']
+	
+	# while marca_json.find("ErrorMensaje"):
 	cantidad_segundos_espera = random.randint(1, 10)
-	print(cantidad_segundos_espera)
 	time.sleep(cantidad_segundos_espera)
