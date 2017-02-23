@@ -95,4 +95,4 @@ for r in xrange(1181415,1181420):
 	cantidad_segundos_espera = random.randint(1, 10)
 	time.sleep(cantidad_segundos_espera)
 
-#Hay que organizar un poco el codigo
+#Hay
