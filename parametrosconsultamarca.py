@@ -1,4 +1,5 @@
-class ConsultaMarca(object):
+import json
+class ParametrosConsultaMarca(object):
 
 	def __init__(self, pidw, phash, param2):
 		self.IDW = pidw
