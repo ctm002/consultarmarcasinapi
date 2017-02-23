@@ -16,8 +16,6 @@ handlers = [
 opener = urllib2.build_opener(*handlers)
 
 def fetch(uri):
-	# user_agent = "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KhTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"  
-	# h = {"User-Agent": user_agent}
 	request = urllib2.Request(uri)
 	return opener.open(request)
 
