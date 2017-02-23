@@ -6,6 +6,7 @@ import re
 import json
 import time
 import random
+from ConsultaMarca import ConsultaMarca
 
 cookies = cookielib.LWPCookieJar()
 handlers = [
@@ -44,29 +45,6 @@ def buscar_marcas_by(registro, cookie, value_hash, value_id):
 	response = opener.open(request)
 	return response.read().decode('utf-8')
 
-class ConsultaMarca(object):
-
-	def __init__(self, pidw, phash, param2):
-		self.IDW = pidw
-		self.Hash = phash
-		self.LastNumSol = 0
-		self.param1 = ""
-		self.param2 = param2
-		self.param3 = ""
-		self.param4 = ""
-		self.param5 = ""
-		self.param6 = ""
-		self.param7 = ""
-		self.param8 = ""
-		self.param9 = ""
-		self.param10 = ""
-		self.param11 = ""
-		self.param12 = ""
-		self.param13 = ""
-		self.param14 = ""
-		self.param15 = ""
-		self.param16 = ""
-		self.param17 = "1"
 
 class RespuestaMarca(object):
 	def __init__(self, j):
@@ -92,5 +70,3 @@ for r in xrange(1181415,1181420):
 	# while marca_json.find("ErrorMensaje"):
 	cantidad_segundos_espera = random.randint(1, 10)
 	time.sleep(cantidad_segundos_espera)
-
-#Hay
