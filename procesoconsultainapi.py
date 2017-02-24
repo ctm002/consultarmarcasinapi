@@ -7,7 +7,6 @@ from buscador import Buscador
 from respuestaconsultamarca import RespuestaConsultaMarca
 from respuestaconsultasolicitud import RespuestaConsultaSolicitud
 
-
 buscador = Buscador()
 buscador.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
 pHash, pId = buscador.extraerIdAndHash()
@@ -72,6 +71,5 @@ for nroRegistro in xrange(1181415,1181420):
 			str_list.append(solicitud_respuesta.d.encode("utf-8"))
 			tiempoDeEspera = random.randint(2, 5)
 			time.sleep(tiempoDeEspera)
-
 outfile.write("["+ ",".join(str_list) +"]")
 outfile.close()
