@@ -13,8 +13,9 @@ buscador.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
 pHash, pId = buscador.extraerIdAndHash()
 
 outfile = open('c://marcas.txt','w+')
-outfile.write("[")
-for nroRegistro in xrange(1181415,1181515):
+str_list = []
+
+for nroRegistro in xrange(1181415,1181420):
 	
 	#Buscamos por el numero de registro para obtener el numero de solicitud
 	marcaJSON = buscador.buscarByRegistro(nroRegistro, pHash, pId)
@@ -68,9 +69,9 @@ for nroRegistro in xrange(1181415,1181515):
 			# 	etiqueta,
 			# 	audio,
 			# 	etiquetaDescripcion)
-			outfile.write(solicitud_respuesta.d.encode("utf-8") + ",")
+			str_list.append(solicitud_respuesta.d.encode("utf-8"))
 			tiempoDeEspera = random.randint(2, 5)
 			time.sleep(tiempoDeEspera)
 
-outfile.write("]")
+outfile.write("["+ ",".join(str_list) +"]")
 outfile.close()
