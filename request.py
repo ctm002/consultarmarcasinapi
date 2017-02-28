@@ -7,7 +7,7 @@ from parametrosconsultamarca import ParametrosConsultaMarca
 from parametrosconsultasolicitud import ParametrosConsultaSolicitud
 from respuestaconsultamarca import RespuestaConsultaMarca
 
-class Buscador(object):
+class Request(object):
 
 	def  __init__(self):
 		self.cookies = cookielib.LWPCookieJar()
@@ -37,16 +37,13 @@ class Buscador(object):
 	def getHeader(self):
 		 return {"User-Agent":self.userAgent,"Content-Type":self.contentType,"Cookie":self.cookie, "Referer" : self.referer}
 
-	def buscarByRegistro(self, url, pNroRegistro, pHash, pID):
-		parametros_consulta_marca = ParametrosConsultaMarca(pID, pHash, pNroRegistro)
-		parametros_consulta_marca_encode = json.dumps(parametros_consulta_marca.__dict__)
-		request = urllib2.Request(url, parametros_consulta_marca_encode, headers = self.getHeader())
-		response = self.opener.open(request)
-		return response.read().decode('utf-8')
+	def setURL(self, url):
+		self.URL = url
 
-	def buscarBySolicitud(self, url, pNroSolicitud, pHash, pID):
-		parametros_consulta_solicitud = ParametrosConsultaSolicitud(pHash, pID, pNroSolicitud)
-		parametros_consulta_solicitud_encode = json.dumps(parametros_consulta_solicitud.__dict__)
-		request = urllib2.Request(url, parametros_consulta_solicitud_encode, headers = self.getHeader())
+	def setParametros(self, parametros):
+		self.parametros = parametros
+
+	def getDownloadData(self):
+		request = urllib2.Request(self.URL, self.parametros, headers = self.getHeader())
 		response = self.opener.open(request)
 		return response.read()

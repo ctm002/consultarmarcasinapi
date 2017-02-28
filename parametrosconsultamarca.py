@@ -1,5 +1,6 @@
-import json
-class ParametrosConsultaMarca(object):
+from parametros import Parametros
+
+class ParametrosConsultaMarca(Parametros):
 
 	def __init__(self, pidw, phash, param2):
 		self.IDW = pidw
@@ -22,3 +23,6 @@ class ParametrosConsultaMarca(object):
 		self.param15 = ""
 		self.param16 = ""
 		self.param17 = "1"
+
+	# def encodetojson(self):
+	# 	return json.dumps(__dict__)

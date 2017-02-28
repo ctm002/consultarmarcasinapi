@@ -3,23 +3,30 @@ import re
 import json
 import time
 import random
-from buscador import Buscador
+from request import Request
 from respuestaconsultamarca import RespuestaConsultaMarca
 from respuestaconsultasolicitud import RespuestaConsultaSolicitud
 from filewriter import FileWriter
 from crawler import Crawler
+from parametros import Parametros
+from convert import Convert
+from parametrosconsultasolicitud import ParametrosConsultaSolicitud
+from parametrosconsultamarca import ParametrosConsultaMarca
+
 
 def process():
-	buscador = Buscador()
-	html = buscador.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
+	request = Request()
+	html = request.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
 	crawler = Crawler(html)
-	pHash, pId = crawler.extraer()
+	pHash, pIDW = crawler.extraer()
 
 	str_list = []
 	for nroRegistro in xrange(1181415,1181420):
-		
-		#Buscamos por el numero de registro para obtener el numero de solicitud
-		marcaJSON = buscador.buscarByRegistro("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcas", nroRegistro, pHash, pId)
+		request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcas")
+		parametros = Convert().tojson(ParametrosConsultaMarca(pIDW, pHash,nroRegistro))
+		request.setParametros(parametros)
+		marcaJSON = request.getDownloadData()
+
 		if marcaJSON.find("ErrorMessage") == -1:
 			marca_respuesta = RespuestaConsultaMarca(marcaJSON)
 			marca_respuesta_json = json.loads(marca_respuesta.d,"utf-8")
@@ -28,16 +35,15 @@ def process():
 			pNroSolicitud = pMarca['cell'][0]
 
 			#Buscamos por numero de solicitud
-			solicitudJSON = buscador.buscarBySolicitud("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud", pNroSolicitud, pHash, pId)
-			if solicitudJSON.find("ErrorMessage") == -1:
+			request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud")
+			request.setParametros(Convert().tojson(ParametrosConsultaSolicitud(pHash, pIDW, pNroSolicitud)) )
+			detalleMarca = request.getDownloadData()
+			if detalleMarca.find("ErrorMessage") == -1:
 				
-				solicitud_respuesta = RespuestaConsultaSolicitud(solicitudJSON)
-				# print solicitud_respuesta.d
-
+				solicitud_respuesta = RespuestaConsultaSolicitud(detalleMarca)
 				solicitud_respuesta_json = json.loads(solicitud_respuesta.d,"utf-8")
 				pHash = solicitud_respuesta_json['Hash']
 				pMarcaDetalle =  solicitud_respuesta_json['Marca']
-
 				# tipoCategoria = pMarcaDetalle['TipoCategoria']
 				# tipoCategoriaDescripcion = pMarcaDetalle['TipoCategoriaDescripcion'].encode("utf-8")
 				# tipoCobertura = pMarcaDetalle['TipoCobertura']
