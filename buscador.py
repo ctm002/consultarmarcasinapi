@@ -27,31 +27,26 @@ class Buscador(object):
 		request = urllib2.Request(uri)
 		self.html = self.opener.open(request).read()
 		self.cookie = self.getCookie()
+		return self.html
 
 	def getCookie(self):
 		for cookie in  self.cookies:
 		   if "ASP.NET_SessionId" == cookie.name:
 		   		return cookie.name + "=" +  cookie.value
 
-	def extraerIdAndHash(self):
-		patron = re.compile(r"^\s*setHash\s*\(\s*['\"]([0-9a-f]*)['\"]\s*,\s*['\"]([0-9]*)['\"]\s*\)\s*;", re.MULTILINE)
-		matcher = patron.search(self.html)
-		return matcher.group(1), matcher.group(2)
+	def getHeader(self):
+		 return {"User-Agent":self.userAgent,"Content-Type":self.contentType,"Cookie":self.cookie, "Referer" : self.referer}
 
-	def buscarByRegistro(self, pNroRegistro, pHash, pID):
-		url = "http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcas"
+	def buscarByRegistro(self, url, pNroRegistro, pHash, pID):
 		parametros_consulta_marca = ParametrosConsultaMarca(pID, pHash, pNroRegistro)
 		parametros_consulta_marca_encode = json.dumps(parametros_consulta_marca.__dict__)
-		vHeaders = {"User-Agent":self.userAgent,"Content-Type":self.contentType,"Cookie":self.cookie, "Referer" : self.referer}
-		request = urllib2.Request(url, parametros_consulta_marca_encode, headers = vHeaders)
+		request = urllib2.Request(url, parametros_consulta_marca_encode, headers = self.getHeader())
 		response = self.opener.open(request)
 		return response.read().decode('utf-8')
 
-	def buscarBySolicitud(self, pNroSolicitud, pHash, pID):
-		url = "http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud"
+	def buscarBySolicitud(self, url, pNroSolicitud, pHash, pID):
 		parametros_consulta_solicitud = ParametrosConsultaSolicitud(pHash, pID, pNroSolicitud)
 		parametros_consulta_solicitud_encode = json.dumps(parametros_consulta_solicitud.__dict__)
-		vHeaders =  {"User-Agent":self.userAgent,"Content-Type":self.contentType,"Cookie":self.cookie, "Referer" : self.referer}
-		request = urllib2.Request(url, parametros_consulta_solicitud_encode, headers = vHeaders)
+		request = urllib2.Request(url, parametros_consulta_solicitud_encode, headers = self.getHeader())
 		response = self.opener.open(request)
 		return response.read()

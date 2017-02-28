@@ -7,17 +7,19 @@ from buscador import Buscador
 from respuestaconsultamarca import RespuestaConsultaMarca
 from respuestaconsultasolicitud import RespuestaConsultaSolicitud
 from filewriter import FileWriter
+from crawler import Crawler
 
 def process():
 	buscador = Buscador()
-	buscador.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
-	pHash, pId = buscador.extraerIdAndHash()
+	html = buscador.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
+	crawler = Crawler(html)
+	pHash, pId = crawler.extraer()
 
 	str_list = []
 	for nroRegistro in xrange(1181415,1181420):
 		
 		#Buscamos por el numero de registro para obtener el numero de solicitud
-		marcaJSON = buscador.buscarByRegistro(nroRegistro, pHash, pId)
+		marcaJSON = buscador.buscarByRegistro("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcas", nroRegistro, pHash, pId)
 		if marcaJSON.find("ErrorMessage") == -1:
 			marca_respuesta = RespuestaConsultaMarca(marcaJSON)
 			marca_respuesta_json = json.loads(marca_respuesta.d,"utf-8")
@@ -26,7 +28,7 @@ def process():
 			pNroSolicitud = pMarca['cell'][0]
 
 			#Buscamos por numero de solicitud
-			solicitudJSON = buscador.buscarBySolicitud(pNroSolicitud, pHash, pId)
+			solicitudJSON = buscador.buscarBySolicitud("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud", pNroSolicitud, pHash, pId)
 			if solicitudJSON.find("ErrorMessage") == -1:
 				
 				solicitud_respuesta = RespuestaConsultaSolicitud(solicitudJSON)
@@ -76,6 +78,4 @@ def process():
 	fileWrite.open()
 	fileWrite.save("["+ ",".join(str_list) +"]")
 	fileWrite.close()
-
-
 process()
