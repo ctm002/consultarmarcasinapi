@@ -1,4 +1,4 @@
-import pypyodbc
+import pyodbc
 
 class DataAccess(object):
 
@@ -6,11 +6,13 @@ class DataAccess(object):
 		pass
 
 	def connect(self):
-		connection = pypyodbc.connect('Driver={SQL Server};'
-                                'Server=localhost;'
-                                'Database=sonar;'
-                                'uid=sa;pwd=12345')
-		connection.close()
+		conn = pyodbc.connect('Driver={SQL Server};Server=vsqldesa;Database=sarbot;uid=sa;pwd=Weekmark@2711')
+		cur = conn.cursor()
+		cur.execute("select * from Marca")
+		for row in cur:
+			print row.TipoCategoria  + " " + row.TipoCategoriaDescripcion
+
+		conn.close()
 
 
 
