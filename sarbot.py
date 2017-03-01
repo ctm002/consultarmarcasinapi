@@ -22,8 +22,7 @@ def process():
 	request.setParametros(None)
 	html = request.getDownloadData()
 	cookie = request.getCookieByName("ASP.NET_SessionId") 
-	crawler = Crawler(html)
-	pHash, pIDW = crawler.extraer()
+	pHash, pIDW = Crawler().extraer(html)
 
 	str_list = []
 	for nroRegistro in xrange(1181415,1181420):
@@ -92,8 +91,8 @@ def process():
 		else:
 			print returnData
 
-	fileWrite = FileWriter("marcas.txt")
-	fileWrite.open()
+	fileWrite = FileWriter()
+	fileWrite.open("marcas.txt")
 	fileWrite.save("["+ ",".join(str_list) +"]")
 	fileWrite.close()
 
