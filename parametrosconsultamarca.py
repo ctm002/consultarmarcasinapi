@@ -23,6 +23,3 @@ class ParametrosConsultaMarca(Parametros):
 		self.param15 = ""
 		self.param16 = ""
 		self.param17 = "1"
-
-	# def encodetojson(self):
-	# 	return json.dumps(__dict__)

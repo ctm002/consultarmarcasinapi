@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import re
 import json
 import time
@@ -16,27 +17,34 @@ from parametrosconsultamarca import ParametrosConsultaMarca
 
 def process():
 	request = Request()
-	html = request.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
+	request.setURL("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
+	request.setParametros(None)
+	html = request.getDownloadData()
 	crawler = Crawler(html)
 	pHash, pIDW = crawler.extraer()
+	print pHash
+	print pIDW
 
 	str_list = []
 	for nroRegistro in xrange(1181415,1181420):
 		request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcas")
 		parametros = Convert().tojson(ParametrosConsultaMarca(pIDW, pHash,nroRegistro))
+		print parametros
 		request.setParametros(parametros)
-		marcaJSON = request.getDownloadData()
+		returnData = request.getDownloadData()
 
-		if marcaJSON.find("ErrorMessage") == -1:
-			marca_respuesta = RespuestaConsultaMarca(marcaJSON)
-			marca_respuesta_json = json.loads(marca_respuesta.d,"utf-8")
-			pHash = marca_respuesta_json['Hash']
-			pMarca = marca_respuesta_json['Marcas'][0]	
-			pNroSolicitud = pMarca['cell'][0]
+		if returnData.find("ErrorMessage") == -1:
+			headerMarca = RespuestaConsultaMarca(returnData)
+			pHash = marcaHeader.getHash()
+			pNroSolicitud = headerMarca.getNroSolicitud()
+
+			print pHash
+			print pNroSolicitud
 
 			#Buscamos por numero de solicitud
 			request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud")
-			request.setParametros(Convert().tojson(ParametrosConsultaSolicitud(pHash, pIDW, pNroSolicitud)) )
+			parametros =ParametrosConsultaSolicitud(pHash, pIDW, pNroSolicitud)
+			request.setParametros(Convert().tojson(parametros))
 			detalleMarca = request.getDownloadData()
 			if detalleMarca.find("ErrorMessage") == -1:
 				
@@ -79,9 +87,13 @@ def process():
 				str_list.append(solicitud_respuesta.d.encode("utf-8"))
 				tiempoDeEspera = random.randint(2, 5)
 				time.sleep(tiempoDeEspera)
+		else:
+			print returnData
 
-	fileWrite = FileWriter()
-	fileWrite.open()
-	fileWrite.save("["+ ",".join(str_list) +"]")
-	fileWrite.close()
+#	fileWrite = FileWriter("marcas.txt")
+#	fileWrite.open()
+#	fileWrite.save("["+ ",".join(str_list) +"]")
+#	fileWrite.close()
+
+
 process()
