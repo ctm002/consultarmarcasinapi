@@ -86,7 +86,6 @@ def process():
 				# 	audio,
 				# 	etiquetaDescripcion)
 				print 'des' +  detailsMarca.getTipoCategoriaDescripcion()
-
 				str_list.append(detailsMarca.d.encode("utf-8"))
 				tiempoDeEspera = random.randint(2, 5)
 				time.sleep(tiempoDeEspera)

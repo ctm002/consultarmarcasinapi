@@ -29,10 +29,13 @@ class Request(object):
 		self.cookie = self.getCookie()
 		return self.html
 
-	def getCookie(self):
+	def getCookieByName(self, name):
 		for cookie in  self.cookies:
-		   if "ASP.NET_SessionId" == cookie.name:
+		   if name == cookie.name:
 		   		return cookie.name + "=" +  cookie.value
+
+	def setCookie(self,name):
+		self.cookie = name
 
 	def getHeader(self):
 		 return {"User-Agent":self.userAgent,"Content-Type":self.contentType,"Cookie":self.cookie, "Referer" : self.referer}
