@@ -98,5 +98,5 @@ def process():
 	fileWrite.close()
 
 #process()
-db = DataAccess()
-db.connect()
+# db = DataAccess()
+# db.connect()

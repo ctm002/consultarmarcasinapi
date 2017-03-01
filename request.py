@@ -31,8 +31,8 @@ class Request(object):
 
 	def getCookieByName(self, name):
 		for cookie in  self.cookies:
-		if name == cookie.name:
-		   return cookie.name + "=" +  cookie.value
+			if name == cookie.name:
+		   	return cookie.name + "=" +  cookie.value
 
 	def setCookie(self,name):
 		self.cookie = name
