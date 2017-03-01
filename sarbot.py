@@ -21,7 +21,7 @@ def process():
 	request.setURL("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
 	request.setParametros(None)
 	html = request.getDownloadData()
-	cookie = request.getCookie("ASP.NET_SessionId")
+	cookie = request.getCookieByName("ASP.NET_SessionId") 
 	crawler = Crawler(html)
 	pHash, pIDW = crawler.extraer()
 
@@ -29,7 +29,6 @@ def process():
 	for nroRegistro in xrange(1181415,1181420):
 		
 		request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcas")
-		request.setCookie(cookie)
 		parametros = Convert().tojson(ParametrosConsultaMarca(pIDW, pHash,nroRegistro))
 		request.setParametros(parametros)
 		request.setCookie(cookie)
@@ -43,8 +42,9 @@ def process():
 
 			#Buscamos por numero de solicitud
 			request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud")
-			request.setCookie(cookie)
 			request.setParametros(Convert().tojson(ParametrosConsultaSolicitud(pHash, pIDW, pNroSolicitud)))
+			request.setCookie(cookie)
+
 			returnData = request.getDownloadData()
 			if returnData.find("ErrorMessage") == -1:
 				
@@ -86,7 +86,6 @@ def process():
 				# 	audio,
 				# 	etiquetaDescripcion)
 				print 'des' +  detailsMarca.getTipoCategoriaDescripcion()
-
 				str_list.append(detailsMarca.d.encode("utf-8"))
 				tiempoDeEspera = random.randint(2, 5)
 				time.sleep(tiempoDeEspera)

@@ -29,13 +29,13 @@ class Request(object):
 		self.cookie = self.getCookie()
 		return self.html
 
-	def setCookie(self, cookie):
-		self.cookie = cookie
-
-	def getCookie(self, cookieName):
+	def getCookieByName(self, name):
 		for cookie in  self.cookies:
-		   if cookieName == cookie.name:
-		   		return cookie.name + "=" +  cookie.value
+		if name == cookie.name:
+		   return cookie.name + "=" +  cookie.value
+
+	def setCookie(self,name):
+		self.cookie = name
 
 	def getHeader(self):
 		return {
