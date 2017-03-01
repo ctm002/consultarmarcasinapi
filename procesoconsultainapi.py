@@ -16,13 +16,16 @@ from parametrosconsultamarca import ParametrosConsultaMarca
 
 def process():
 	request = Request()
-	html = request.fetch("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
-	crawler = Crawler(html)
-	pHash, pIDW = crawler.extraer()
+	request.setURL("http://200.55.216.86:8080/Marca/BuscarMarca.aspx")
+	request.setParametros(None)
+	html = request.getDownloadData()
+	pHash, pIDW = Crawler().extraer(html)
+	cookie = request.getCookie("ASP.NET_SessionId")
 
 	str_list = []
 	for nroRegistro in xrange(1181415,1181420):
 		request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcas")
+		request.setCookie(cookie)
 		parametros = Convert().tojson(ParametrosConsultaMarca(pIDW, pHash,nroRegistro))
 		request.setParametros(parametros)
 		marcaJSON = request.getDownloadData()
@@ -36,6 +39,7 @@ def process():
 
 			#Buscamos por numero de solicitud
 			request.setURL("http://ion.inapi.cl:8080/Marca/BuscarMarca.aspx/FindMarcaByNumeroSolicitud")
+			request.setCookie(cookie)
 			request.setParametros(Convert().tojson(ParametrosConsultaSolicitud(pHash, pIDW, pNroSolicitud)) )
 			detalleMarca = request.getDownloadData()
 			if detalleMarca.find("ErrorMessage") == -1:
