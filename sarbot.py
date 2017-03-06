@@ -96,4 +96,4 @@ def process():
 	fileWrite.save("["+ ",".join(str_list) +"]")
 	fileWrite.close()
 
-#process()
+def process2():
